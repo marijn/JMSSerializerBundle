@@ -18,10 +18,21 @@
 
 namespace JMS\SerializerBundle\Serializer;
 
+use JMS\SerializerBundle\Serializer\Naming\PropertyNamingStrategyInterface;
+
 class JsonSerializationVisitor extends GenericSerializationVisitor
 {
+    private $options;
+
+    public function __construct(PropertyNamingStrategyInterface $namingStrategy, array $customHandlers, $prettyPrint = true)
+    {
+        parent::__construct($namingStrategy, $customHandlers);
+
+        $this->options = $prettyPrint && defined('JSON_PRETTY_PRINT') ? \JSON_PRETTY_PRINT : 0;
+    }
+
     public function getResult()
     {
-        return json_encode($this->getRoot());
+        return json_encode($this->getRoot(), $this->options);
     }
 }
